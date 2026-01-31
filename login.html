@@ -22,19 +22,22 @@
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
 
-    // Redirigir automáticamente al login (solo una vez, con retraso)
-    document.addEventListener("DOMContentLoaded", () => {
+    // Función de redirección con espera de 5 segundos
+    function intentarRedireccion() {
       if (!window.redirected) {
         window.redirected = true;
         setTimeout(() => {
           window.location.replace("login.html"); 
           // 👆 Cambia "login.html" por la ruta real de tu página de login
-        }, 500); // medio segundo de espera
+        }, 5000); // espera de 5 segundos
       }
-    });
+    }
+
+    // Ejecutar al cargar el DOM
+    document.addEventListener("DOMContentLoaded", intentarRedireccion);
   </script>
 </head>
 <body>
-  <p>Redirigiendo al login...</p>
+  <p>Redirigiendo al login en 5 segundos...</p>
 </body>
 </html>
