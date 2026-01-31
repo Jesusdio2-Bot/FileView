@@ -2,10 +2,21 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Login - FileView</title>
+  <title>Login con Google</title>
+</head>
+<body>
+  <h2>Iniciar sesión con Google</h2>
+  <button id="loginBtn">Login con Google</button>
+  <button id="logoutBtn">Cerrar sesión</button>
+
+  <div id="userInfo"></div>
+
   <script type="module">
+    // Importar Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-analytics.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } 
+      from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
     // Configuración de Firebase
     const firebaseConfig = {
@@ -21,23 +32,123 @@
     // Inicializar Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
 
-    // Redirigir automáticamente al login (una sola vez, con espera de 5 segundos)
-    function intentarRedireccion() {
-      if (!window.redirected) {
-        window.redirected = true;
-        setTimeout(() => {
-          // Abrir en nueva pestaña (si el entorno lo permite)
-          window.open("login.html", "_blank"); 
-          // 👆 Cambia "login.html" por la ruta real de tu login
-        }, 5000);
+    // Botón de login
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        document.getElementById("userInfo").innerHTML = `
+          <p>Bienvenido: ${user.displayName}</p>
+          <p>Email: ${user.email}</p>
+          <img src="${user.photoURL}" alt="Foto de perfil"/>
+        `;
+      } catch (error) {
+        console.error("Error en login:", error);
       }
-    }
+    });
 
-    document.addEventListener("DOMContentLoaded", intentarRedireccion);
+    // Botón de logout
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        document.getElementById("userInfo").innerHTML = "<p>Sesión cerrada</p>";
+      } catch (error) {
+        console.error("Error al cerrar sesión:", error);
+      }
+    });
+
+    // Detectar cambios de sesión
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("userInfo").innerHTML = `
+          <p>Bienvenido: ${user.displayName}</p>
+          <p>Email: ${user.email}</p>
+          <img src="${user.photoURL}" alt="Foto de perfil"/>
+        `;
+      } else {
+        document.getElementById("userInfo").innerHTML = "<p>No hay usuario conectado</p>";
+      }
+    });
   </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login con Google</title>
 </head>
 <body>
-  <p>Redirigiendo al login en 5 segundos...</p>
+  <h2>Iniciar sesión con Google</h2>
+  <button id="loginBtn">Login con Google</button>
+  <button id="logoutBtn">Cerrar sesión</button>
+
+  <div id="userInfo"></div>
+
+  <script type="module">
+    // Importar Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-analytics.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } 
+      from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+    // Configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAgx39fgKvBs9VXJv5azi0IKaSIVqVx7OQ",
+      authDomain: "fileview-6769f.firebaseapp.com",
+      projectId: "fileview-6769f",
+      storageBucket: "fileview-6769f.firebasestorage.app",
+      messagingSenderId: "428852089961",
+      appId: "1:428852089961:web:d9fea6eef3beff21407ef8",
+      measurementId: "G-GS4QTHK0SR"
+    };
+
+    // Inicializar Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // Botón de login
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        document.getElementById("userInfo").innerHTML = `
+          <p>Bienvenido: ${user.displayName}</p>
+          <p>Email: ${user.email}</p>
+          <img src="${user.photoURL}" alt="Foto de perfil"/>
+        `;
+      } catch (error) {
+        console.error("Error en login:", error);
+      }
+    });
+
+    // Botón de logout
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        document.getElementById("userInfo").innerHTML = "<p>Sesión cerrada</p>";
+      } catch (error) {
+        console.error("Error al cerrar sesión:", error);
+      }
+    });
+
+    // Detectar cambios de sesión
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("userInfo").innerHTML = `
+          <p>Bienvenido: ${user.displayName}</p>
+          <p>Email: ${user.email}</p>
+          <img src="${user.photoURL}" alt="Foto de perfil"/>
+        `;
+      } else {
+        document.getElementById("userInfo").innerHTML = "<p>No hay usuario conectado</p>";
+      }
+    });
+  </script>
 </body>
 </html>
